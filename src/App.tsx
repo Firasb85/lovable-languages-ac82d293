@@ -1,27 +1,65 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+// Meridian Growth Advisory - Main Application Component
 
-const queryClient = new QueryClient();
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import { AppProvider, useApp } from '@/contexts/AppContext';
+import { Navigation } from '@/components/Navigation';
+import { Footer } from '@/components/Footer';
+import routes from './routes';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useApp();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  
+  return <>{children}</>;
+}
+
+function AppContent() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen">
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          {routes.map((route, index) => {
+            const isAdminRoute = route.path.startsWith('/admin');
+            const element = route.protected ? (
+              <ProtectedRoute>{route.element}</ProtectedRoute>
+            ) : route.element;
+
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={
+                  isAdminRoute ? (
+                    element
+                  ) : (
+                    <>
+                      <Navigation />
+                      <main className="flex-grow">{element}</main>
+                      <Footer />
+                    </>
+                  )
+                }
+              />
+            );
+          })}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </div>
+      <Toaster />
+    </Router>
+  );
+}
+
+function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
+}
 
 export default App;
