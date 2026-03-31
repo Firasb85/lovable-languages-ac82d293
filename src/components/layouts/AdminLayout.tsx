@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useApp } from '@/contexts/AppContext';
 import { translations, getTranslation } from '@/i18n/translations';
-import { LayoutDashboard, FileText, Users, FileEdit, Languages, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, FileEdit, Languages, ArrowLeft, LogOut } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface AdminLayoutProps {
@@ -15,7 +15,7 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children, title, breadcrumb }: AdminLayoutProps) {
-  const { currentLanguage, contentOverrides } = useApp();
+  const { currentLanguage, contentOverrides, logout } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const t = translations[currentLanguage];
@@ -78,7 +78,7 @@ export function AdminLayout({ children, title, breadcrumb }: AdminLayoutProps) {
             ))}
           </nav>
 
-          <div className="mt-8 pt-8 border-t border-sidebar-border">
+          <div className="mt-8 pt-8 border-t border-sidebar-border space-y-1">
             <Button
               variant="ghost"
               className="w-full justify-start text-sidebar-foreground/80 hover:text-sidebar-foreground"
@@ -86,6 +86,14 @@ export function AdminLayout({ children, title, breadcrumb }: AdminLayoutProps) {
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               {getTranslation(t, 'admin.nav.backToSite')}
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-sidebar-foreground/60 hover:text-destructive"
+              onClick={() => { logout(); navigate('/admin/login'); }}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
             </Button>
           </div>
         </div>
