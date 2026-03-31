@@ -115,12 +115,6 @@ export function AdminLanguagesPage() {
     toast.success(`Translations saved for ${selectedLangForTranslation.toUpperCase()}`);
   };
 
-  const handleSaveAllLanguages = () => {
-    // Save current language translations
-    updateLanguageTranslation(selectedLangForTranslation, translationOverrides);
-    toast.success('All translations saved successfully!');
-  };
-
   return (
     <AdminLayout title="Language Management">
       <div className="max-w-6xl space-y-6">
@@ -315,7 +309,11 @@ export function AdminLanguagesPage() {
                   </Accordion>
 
                   <div className="flex justify-end gap-4 pt-6">
-                    <Button variant="outline" onClick={() => setTranslationOverrides({})}>
+                    <Button variant="outline" onClick={() => {
+                      setTranslationOverrides({});
+                      updateLanguageTranslation(selectedLangForTranslation, {});
+                      toast.success('Translations reset to defaults');
+                    }}>
                       Reset All
                     </Button>
                     <Button onClick={handleSaveTranslations} size="lg">
