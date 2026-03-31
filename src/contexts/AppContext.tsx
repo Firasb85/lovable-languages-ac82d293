@@ -1,233 +1,139 @@
-// Meridian Growth Advisory - Global Application Context
+// Meridian Growth Advisory - Application Context
+// Provides global state: language, auth, requests, CRM, content overrides, translation overrides
 
-import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type {
   AppState,
-  LanguageCode,
   Language,
+  LanguageCode,
   ContactRequest,
   CRMEntry,
   ContentOverrides,
   LanguageTranslationOverrides,
 } from '@/types/types';
 
-interface AppContextType extends AppState {
+interface AppContextValue extends AppState {
   setLanguage: (code: LanguageCode) => void;
   login: (username: string, password: string) => boolean;
   logout: () => void;
-  addRequest: (request: Omit<ContactRequest, 'id' | 'createdAt' | 'status'>) => void;
+  addRequest: (data: Omit<ContactRequest, 'id' | 'status' | 'createdAt'>) => void;
   updateRequestStatus: (id: string, status: ContactRequest['status']) => void;
   deleteRequest: (id: string) => void;
-  convertRequestToCRM: (requestId: string) => void;
-  addCRMEntry: (entry: Omit<CRMEntry, 'id' | 'createdAt'>) => void;
-  updateCRMEntry: (id: string, entry: Partial<CRMEntry>) => void;
+  convertRequestToCRM: (id: string) => void;
+  addCRMEntry: (data: Omit<CRMEntry, 'id' | 'createdAt'>) => void;
+  updateCRMEntry: (id: string, data: Partial<Omit<CRMEntry, 'id' | 'createdAt'>>) => void;
   deleteCRMEntry: (id: string) => void;
   updateContentOverrides: (overrides: Partial<ContentOverrides>) => void;
-  updateLanguageTranslation: (languageCode: string, translations: Record<string, string>) => void;
-  addLanguage: (language: Omit<Language, 'enabled' | 'default'>) => void;
-  updateLanguage: (code: LanguageCode, updates: Partial<Language>) => void;
+  addLanguage: (lang: Omit<Language, 'default' | 'enabled'>) => void;
+  updateLanguage: (code: LanguageCode, data: Partial<Language>) => void;
   deleteLanguage: (code: LanguageCode) => void;
   toggleLanguageEnabled: (code: LanguageCode) => void;
   setDefaultLanguage: (code: LanguageCode) => void;
+  updateLanguageTranslation: (langCode: string, keyOrOverrides: string | Record<string, string>, value?: string) => void;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
-
-const initialLanguages: Language[] = [
-  {
-    code: 'ar',
-    name: 'Arabic',
-    nativeName: 'العربية',
-    direction: 'rtl',
-    enabled: true,
-    default: true,
-  },
-  {
-    code: 'en',
-    name: 'English',
-    nativeName: 'English',
-    direction: 'ltr',
-    enabled: true,
-    default: false,
-  },
-  {
-    code: 'kr',
-    name: 'Kurdish Sorani',
-    nativeName: 'کوردی سۆرانی',
-    direction: 'rtl',
-    enabled: true,
-    default: false,
-  },
+const DEFAULT_LANGUAGES: Language[] = [
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', direction: 'rtl', enabled: true, default: true },
+  { code: 'en', name: 'English', nativeName: 'English', direction: 'ltr', enabled: true, default: false },
+  { code: 'kr', name: 'Kurdish Sorani', nativeName: 'کوردی سۆرانی', direction: 'rtl', enabled: true, default: false },
 ];
+
+const AppContext = createContext<AppContextValue | null>(null);
+
+function genId(): string {
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+}
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('ar');
-  const [languages, setLanguages] = useState<Language[]>(initialLanguages);
+  const [languages, setLanguages] = useState<Language[]>(DEFAULT_LANGUAGES);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requests, setRequests] = useState<ContactRequest[]>([]);
   const [crmEntries, setCrmEntries] = useState<CRMEntry[]>([]);
   const [contentOverrides, setContentOverrides] = useState<ContentOverrides>({});
   const [languageTranslationOverrides, setLanguageTranslationOverrides] = useState<LanguageTranslationOverrides>({});
 
-  const setLanguage = useCallback((code: LanguageCode) => {
-    const language = languages.find(lang => lang.code === code && lang.enabled);
-    if (language) {
-      setCurrentLanguage(code);
-      document.documentElement.setAttribute('dir', language.direction);
-      document.documentElement.setAttribute('lang', code);
-    }
-  }, [languages]);
+  useEffect(() => {
+    const lang = languages.find((l) => l.code === currentLanguage);
+    const dir = lang?.direction ?? 'rtl';
+    document.documentElement.setAttribute('lang', currentLanguage);
+    document.documentElement.setAttribute('dir', dir);
+  }, [currentLanguage, languages]);
 
-  const login = useCallback((username: string, password: string) => {
-    if (username === 'admin' && password === 'admin123') {
-      setIsAuthenticated(true);
-      return true;
-    }
+  const setLanguage = (code: LanguageCode) => setCurrentLanguage(code);
+  const login = (username: string, password: string): boolean => {
+    if (username === 'admin' && password === 'admin123') { setIsAuthenticated(true); return true; }
     return false;
-  }, []);
+  };
+  const logout = () => setIsAuthenticated(false);
 
-  const logout = useCallback(() => {
-    setIsAuthenticated(false);
-  }, []);
+  const addRequest = (data: Omit<ContactRequest, 'id' | 'status' | 'createdAt'>) => {
+    setRequests((prev) => [{ ...data, id: genId(), status: 'new', createdAt: new Date() }, ...prev]);
+  };
+  const updateRequestStatus = (id: string, status: ContactRequest['status']) => {
+    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+  };
+  const deleteRequest = (id: string) => setRequests((prev) => prev.filter((r) => r.id !== id));
+  const convertRequestToCRM = (id: string) => {
+    const req = requests.find((r) => r.id === id);
+    if (!req) return;
+    setCrmEntries((prev) => [{ id: genId(), fullName: req.fullName, company: req.company, email: req.email, phone: req.phone, notes: req.message, createdAt: new Date() }, ...prev]);
+    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'done' } : r)));
+  };
 
-  const addRequest = useCallback((request: Omit<ContactRequest, 'id' | 'createdAt' | 'status'>) => {
-    const newRequest: ContactRequest = {
-      ...request,
-      id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      status: 'new',
-      createdAt: new Date(),
-    };
-    setRequests(prev => [newRequest, ...prev]);
-  }, []);
+  const addCRMEntry = (data: Omit<CRMEntry, 'id' | 'createdAt'>) => {
+    setCrmEntries((prev) => [{ ...data, id: genId(), createdAt: new Date() }, ...prev]);
+  };
+  const updateCRMEntry = (id: string, data: Partial<Omit<CRMEntry, 'id' | 'createdAt'>>) => {
+    setCrmEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...data } : e)));
+  };
+  const deleteCRMEntry = (id: string) => setCrmEntries((prev) => prev.filter((e) => e.id !== id));
 
-  const updateRequestStatus = useCallback((id: string, status: ContactRequest['status']) => {
-    setRequests(prev => prev.map(req => req.id === id ? { ...req, status } : req));
-  }, []);
+  const updateContentOverrides = (overrides: Partial<ContentOverrides>) => {
+    setContentOverrides((prev) => ({ ...prev, ...overrides }));
+  };
 
-  const deleteRequest = useCallback((id: string) => {
-    setRequests(prev => prev.filter(req => req.id !== id));
-  }, []);
-
-  const convertRequestToCRM = useCallback((requestId: string) => {
-    const request = requests.find(req => req.id === requestId);
-    if (request) {
-      const crmEntry: CRMEntry = {
-        id: `crm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        fullName: request.fullName,
-        company: request.company,
-        email: request.email,
-        phone: request.phone,
-        notes: `Converted from request on ${new Date().toLocaleDateString()}. Original message: ${request.message || 'N/A'}`,
-        createdAt: new Date(),
-      };
-      setCrmEntries(prev => [crmEntry, ...prev]);
+  const addLanguage = (lang: Omit<Language, 'default' | 'enabled'>) => {
+    setLanguages((prev) => [...prev, { ...lang, enabled: true, default: false }]);
+  };
+  const updateLanguage = (code: LanguageCode, data: Partial<Language>) => {
+    setLanguages((prev) => prev.map((l) => (l.code === code ? { ...l, ...data } : l)));
+  };
+  const deleteLanguage = (code: LanguageCode) => {
+    setLanguages((prev) => prev.filter((l) => l.code !== code));
+    if (currentLanguage === code) {
+      const fallback = languages.find((l) => l.default && l.code !== code) ?? languages[0];
+      if (fallback) setCurrentLanguage(fallback.code);
     }
-  }, [requests]);
+  };
+  const toggleLanguageEnabled = (code: LanguageCode) => {
+    setLanguages((prev) => prev.map((l) => (l.code === code ? { ...l, enabled: !l.enabled } : l)));
+  };
+  const setDefaultLanguage = (code: LanguageCode) => {
+    setLanguages((prev) => prev.map((l) => ({ ...l, default: l.code === code })));
+  };
 
-  const addCRMEntry = useCallback((entry: Omit<CRMEntry, 'id' | 'createdAt'>) => {
-    const newEntry: CRMEntry = {
-      ...entry,
-      id: `crm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date(),
-    };
-    setCrmEntries(prev => [newEntry, ...prev]);
-  }, []);
+  const updateLanguageTranslation = (langCode: string, keyOrOverrides: string | Record<string, string>, value?: string) => {
+    setLanguageTranslationOverrides((prev) => {
+      if (typeof keyOrOverrides === 'string') {
+        return { ...prev, [langCode]: { ...(prev[langCode] ?? {}), [keyOrOverrides]: value ?? '' } };
+      }
+      return { ...prev, [langCode]: { ...(prev[langCode] ?? {}), ...keyOrOverrides } };
+    });
+  };
 
-  const updateCRMEntry = useCallback((id: string, entry: Partial<CRMEntry>) => {
-    setCrmEntries(prev => prev.map(crm => crm.id === id ? { ...crm, ...entry } : crm));
-  }, []);
-
-  const deleteCRMEntry = useCallback((id: string) => {
-    setCrmEntries(prev => prev.filter(crm => crm.id !== id));
-  }, []);
-
-  const updateContentOverrides = useCallback((overrides: Partial<ContentOverrides>) => {
-    setContentOverrides(prev => ({ ...prev, ...overrides }));
-  }, []);
-
-  const updateLanguageTranslation = useCallback((languageCode: string, translations: Record<string, string>) => {
-    setLanguageTranslationOverrides(prev => ({
-      ...prev,
-      [languageCode]: {
-        ...(prev[languageCode] || {}),
-        ...translations,
-      },
-    }));
-  }, []);
-
-  const addLanguage = useCallback((language: Omit<Language, 'enabled' | 'default'>) => {
-    const newLanguage: Language = {
-      ...language,
-      enabled: true,
-      default: false,
-    };
-    setLanguages(prev => [...prev, newLanguage]);
-  }, []);
-
-  const updateLanguage = useCallback((code: LanguageCode, updates: Partial<Language>) => {
-    setLanguages(prev => prev.map(lang => lang.code === code ? { ...lang, ...updates } : lang));
-  }, []);
-
-  const deleteLanguage = useCallback((code: LanguageCode) => {
-    const language = languages.find(lang => lang.code === code);
-    if (language?.default) {
-      return; // Cannot delete default language
-    }
-    setLanguages(prev => prev.filter(lang => lang.code !== code));
-  }, [languages]);
-
-  const toggleLanguageEnabled = useCallback((code: LanguageCode) => {
-    const language = languages.find(lang => lang.code === code);
-    if (language?.default) {
-      return; // Cannot disable default language
-    }
-    setLanguages(prev => prev.map(lang => 
-      lang.code === code ? { ...lang, enabled: !lang.enabled } : lang
-    ));
-  }, [languages]);
-
-  const setDefaultLanguage = useCallback((code: LanguageCode) => {
-    setLanguages(prev => prev.map(lang => ({
-      ...lang,
-      default: lang.code === code,
-    })));
-    setLanguage(code);
-  }, [setLanguage]);
-
-  const value: AppContextType = {
-    currentLanguage,
-    languages,
-    isAuthenticated,
-    requests,
-    crmEntries,
-    contentOverrides,
-    languageTranslationOverrides,
-    setLanguage,
-    login,
-    logout,
-    addRequest,
-    updateRequestStatus,
-    deleteRequest,
-    convertRequestToCRM,
-    addCRMEntry,
-    updateCRMEntry,
-    deleteCRMEntry,
-    updateContentOverrides,
-    updateLanguageTranslation,
-    addLanguage,
-    updateLanguage,
-    deleteLanguage,
-    toggleLanguageEnabled,
-    setDefaultLanguage,
+  const value: AppContextValue = {
+    currentLanguage, languages, isAuthenticated, requests, crmEntries, contentOverrides, languageTranslationOverrides,
+    setLanguage, login, logout, addRequest, updateRequestStatus, deleteRequest, convertRequestToCRM,
+    addCRMEntry, updateCRMEntry, deleteCRMEntry, updateContentOverrides,
+    addLanguage, updateLanguage, deleteLanguage, toggleLanguageEnabled, setDefaultLanguage, updateLanguageTranslation,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-export function useApp() {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within AppProvider');
-  }
-  return context;
+export function useApp(): AppContextValue {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be used inside <AppProvider>');
+  return ctx;
 }
