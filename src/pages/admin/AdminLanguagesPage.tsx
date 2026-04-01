@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { translations } from '@/i18n/translations';
 import { flattenTranslations, groupTranslationKeys, getCategoryLabel, getKeyLabel } from '@/lib/translationHelpers';
 import { Plus, Pencil, Trash2, Star, Save, Languages } from 'lucide-react';
 import { toast } from 'sonner';
@@ -24,7 +24,6 @@ import type { Language, LanguageCode, Direction } from '@/types/types';
 
 export function AdminLanguagesPage() {
   const {
-    currentLanguage,
     languages,
     addLanguage,
     updateLanguage,
@@ -34,7 +33,6 @@ export function AdminLanguagesPage() {
     languageTranslationOverrides,
     updateLanguageTranslation,
   } = useApp();
-  const t = translations[currentLanguage] || translations.en;
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);

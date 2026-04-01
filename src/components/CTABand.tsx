@@ -15,9 +15,18 @@ export function CTABand() {
   const buttonText = contentOverrides.ctaButton || getTranslation(t, 'cta.button');
 
   return (
-    <section className="bg-primary py-16">
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
+    <section className="relative py-20 overflow-hidden">
+      {/* Background image with overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop)',
+        }}
+      />
+      <div className="absolute inset-0 bg-primary/90" />
+
+      <div className="container mx-auto px-4 text-center relative z-10">
+        <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground mb-4">
           {title}
         </h2>
         <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
@@ -27,7 +36,7 @@ export function CTABand() {
           size="lg"
           variant="secondary"
           onClick={() => navigate('/contact')}
-          className="text-lg px-8"
+          className="text-lg px-8 glow-pulse"
         >
           {buttonText}
         </Button>

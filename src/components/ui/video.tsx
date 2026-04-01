@@ -10,17 +10,7 @@
  * />
  */
 
-import {
-    BigPlayButton,
-    ControlBar,
-    PlayToggle,
-    CurrentTimeDisplay,
-    TimeDivider,
-    DurationDisplay,
-    FullscreenToggle,
-    VolumeMenuButton,
-    ProgressControl
-} from 'video-react';
+import { Player, BigPlayButton, ControlBar, PlayToggle, CurrentTimeDisplay, TimeDivider, DurationDisplay, FullscreenToggle, VolumeMenuButton, ProgressControl } from 'video-react';
 import 'video-react/dist/video-react.css';
 
 interface VideoProps {
