@@ -24,7 +24,6 @@ import type { Language, LanguageCode, Direction } from '@/types/types';
 
 export function AdminLanguagesPage() {
   const {
-    currentLanguage,
     languages,
     addLanguage,
     updateLanguage,
@@ -34,7 +33,6 @@ export function AdminLanguagesPage() {
     languageTranslationOverrides,
     updateLanguageTranslation,
   } = useApp();
-  // translations available via: translations[currentLanguage]
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
