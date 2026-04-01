@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { CTABand } from '@/components/CTABand';
 import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { translations } from '@/i18n/translations';
 
 export function ServicesPage() {
   const { currentLanguage } = useApp();

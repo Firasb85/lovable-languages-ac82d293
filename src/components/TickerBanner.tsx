@@ -1,7 +1,7 @@
 // Meridian Growth Advisory - Ticker Banner Component
 
 import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { translations } from '@/i18n/translations';
 import { Badge } from '@/components/ui/badge';
 
 export function TickerBanner() {

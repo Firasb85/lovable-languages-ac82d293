@@ -34,7 +34,7 @@ export function AdminLanguagesPage() {
     languageTranslationOverrides,
     updateLanguageTranslation,
   } = useApp();
-  const t = translations[currentLanguage] || translations.en;
+  const _t = translations[currentLanguage] || translations.en;
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
