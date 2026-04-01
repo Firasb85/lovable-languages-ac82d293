@@ -10,7 +10,6 @@
  * />
  */
 
-// @ts-expect-error - video-react types
 import { Player, BigPlayButton, ControlBar, PlayToggle, CurrentTimeDisplay, TimeDivider, DurationDisplay, FullscreenToggle, VolumeMenuButton, ProgressControl } from 'video-react';
 import 'video-react/dist/video-react.css';
 
