@@ -5,21 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { TickerBanner } from '@/components/TickerBanner';
 import { CTABand } from '@/components/CTABand';
-import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { useTranslation } from '@/hooks/useTranslation';
+import { Building2, ShoppingCart, UtensilsCrossed, Radio, Truck } from 'lucide-react';
 
 const industryKeys = ['realestate', 'fmcg', 'fnb', 'telecom', 'distribution'] as const;
-const industryIcons: Record<string, string> = {
-  realestate: '🏢',
-  fmcg: '🛒',
-  fnb: '🍽️',
-  telecom: '📡',
-  distribution: '🚛',
+const industryIcons: Record<string, React.ReactNode> = {
+  realestate: <Building2 className="w-10 h-10" />,
+  fmcg: <ShoppingCart className="w-10 h-10" />,
+  fnb: <UtensilsCrossed className="w-10 h-10" />,
+  telecom: <Radio className="w-10 h-10" />,
+  distribution: <Truck className="w-10 h-10" />,
 };
 
 export function IndustriesPage() {
-  const { currentLanguage } = useApp();
-  const t = translations[currentLanguage] || translations.en;
+  const { gt } = useTranslation();
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -42,10 +41,10 @@ export function IndustriesPage() {
       <section className="navy-grid-bg pt-32 pb-20">
         <div className="container mx-auto px-4 text-center">
           <Badge variant="secondary" className="bg-primary/20 text-primary-foreground border-primary/30 mb-6">
-            {getTranslation(t, 'industries.label')}
+            {gt('industries.label')}
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6">
-            {getTranslation(t, 'industries.heading')}
+            {gt('industries.heading')}
           </h1>
         </div>
       </section>
@@ -56,15 +55,13 @@ export function IndustriesPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {industryKeys.map((industry, index) => (
-              <Card key={industry} className="hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 fade-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <Card key={industry} className="card-glow hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 fade-up" style={{ animationDelay: `${index * 100}ms` }}>
                 <CardContent className="p-8 text-center">
-                  <div className="text-5xl mb-6">{industryIcons[industry]}</div>
-                  <h3 className="text-2xl font-bold mb-3">
-                    {getTranslation(t, `industries.cards.${industry}.name`)}
-                  </h3>
-                  <p className="text-sm opacity-80">
-                    {getTranslation(t, `industries.cards.${industry}.description`)}
-                  </p>
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 text-primary">
+                    {industryIcons[industry]}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">{gt(`industries.cards.${industry}.name`)}</h3>
+                  <p className="text-sm opacity-80">{gt(`industries.cards.${industry}.description`)}</p>
                 </CardContent>
               </Card>
             ))}
