@@ -2,70 +2,61 @@
 
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export function Footer() {
-  const { currentLanguage, contentOverrides, isAuthenticated } = useApp();
+  const { contentOverrides, isAuthenticated } = useApp();
+  const { gt } = useTranslation();
   const navigate = useNavigate();
-  const t = translations[currentLanguage] || translations.en;
 
   const logoText = contentOverrides.logoText || 'Meridian';
-  const footerDesc = contentOverrides.footerDescription || getTranslation(t, 'footer.description');
+  const contactEmail = contentOverrides.contactEmail || 'contact@meridian.com';
 
   const handleAdminClick = () => {
-    if (isAuthenticated) {
-      navigate('/admin');
-    } else {
-      navigate('/admin/login');
-    }
+    navigate(isAuthenticated ? '/admin' : '/admin/login');
   };
 
   return (
     <footer className="bg-secondary text-secondary-foreground py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Column 1: Logo & Description */}
           <div>
             <h3 className="text-xl font-bold mb-3">{logoText}</h3>
-            <p className="text-sm text-secondary-foreground/80">{footerDesc}</p>
+            <p className="text-sm text-secondary-foreground/80">{gt('footer.description')}</p>
           </div>
-
-          {/* Column 2: Expertise */}
           <div>
             <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider">
-              {getTranslation(t, 'nav.expertise')}
+              {gt('nav.expertise')}
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/services" className="text-sm text-secondary-foreground/80 hover:text-secondary-foreground transition-colors">
-                  {getTranslation(t, 'nav.expertise')}
+                  {gt('nav.expertise')}
                 </Link>
               </li>
               <li>
                 <Link to="/industries" className="text-sm text-secondary-foreground/80 hover:text-secondary-foreground transition-colors">
-                  {getTranslation(t, 'nav.industries')}
+                  {gt('nav.industries')}
                 </Link>
               </li>
             </ul>
           </div>
-
-          {/* Column 3: About */}
           <div>
             <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider">
-              {getTranslation(t, 'footer.about')}
+              {gt('footer.about')}
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/contact" className="text-sm text-secondary-foreground/80 hover:text-secondary-foreground transition-colors">
-                  {getTranslation(t, 'footer.talkToAdvisor')}
+                  {gt('footer.talkToAdvisor')}
                 </Link>
               </li>
               <li>
                 <a
-                  href={`mailto:${contentOverrides.contactEmail || 'contact@meridian.com'}`}
+                  href={`mailto:${contactEmail}`}
                   className="text-sm text-secondary-foreground/80 hover:text-secondary-foreground transition-colors"
                 >
-                  {contentOverrides.contactEmail || 'contact@meridian.com'}
+                  {contactEmail}
                 </a>
               </li>
               <li>
@@ -81,11 +72,9 @@ export function Footer() {
             </ul>
           </div>
         </div>
-
-        {/* Bottom Bar */}
         <div className="border-t border-secondary-foreground/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-secondary-foreground/60">
-            {getTranslation(t, 'footer.copyright')}
+            {gt('footer.copyright')}
           </p>
           <button
             type="button"

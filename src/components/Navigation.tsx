@@ -4,24 +4,22 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export function Navigation() {
   const { currentLanguage, languages, setLanguage, contentOverrides } = useApp();
+  const { gt } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const t = translations[currentLanguage] || translations.en;
   const enabledLanguages = languages.filter(lang => lang.enabled);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -30,12 +28,10 @@ export function Navigation() {
     if (location.pathname !== '/') {
       navigate('/');
       setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } else {
-      const element = document.getElementById(sectionId);
-      element?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
     }
     setMobileOpen(false);
   };
@@ -59,39 +55,21 @@ export function Navigation() {
       style={{ height: '70px' }}
     >
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="text-xl font-bold text-foreground">
-          {logoText}
-        </Link>
+        <Link to="/" className="text-xl font-bold text-foreground">{logoText}</Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <button
-            type="button"
-            onClick={() => scrollToSection('industries')}
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            {getTranslation(t, 'nav.industries')}
+          <button type="button" onClick={() => scrollToSection('industries')} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            {gt('nav.industries')}
           </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection('domains')}
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            {getTranslation(t, 'nav.expertise')}
+          <button type="button" onClick={() => scrollToSection('domains')} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            {gt('nav.expertise')}
           </button>
-          <button
-            type="button"
-            onClick={() => handleNavClick('/about')}
-            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            {getTranslation(t, 'nav.about')}
+          <button type="button" onClick={() => handleNavClick('/about')} className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            {gt('nav.about')}
           </button>
         </div>
 
-        {/* Language Switcher & CTA */}
         <div className="flex items-center gap-4">
-          {/* Language Switcher */}
           {enabledLanguages.length > 1 && (
             <div className="flex items-center gap-1 bg-muted rounded-full p-1">
               {enabledLanguages.map((lang) => (
@@ -111,15 +89,10 @@ export function Navigation() {
             </div>
           )}
 
-          {/* CTA Button */}
-          <Button
-            onClick={() => handleNavClick('/contact')}
-            className="hidden md:inline-flex"
-          >
-            {getTranslation(t, 'nav.cta')}
+          <Button onClick={() => handleNavClick('/contact')} className="hidden md:inline-flex">
+            {gt('nav.cta')}
           </Button>
 
-          {/* Mobile Menu */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -128,29 +101,17 @@ export function Navigation() {
             </SheetTrigger>
             <SheetContent side={currentLanguage === 'ar' || currentLanguage === 'kr' ? 'left' : 'right'}>
               <div className="flex flex-col gap-6 mt-8">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('industries')}
-                  className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start"
-                >
-                  {getTranslation(t, 'nav.industries')}
+                <button type="button" onClick={() => scrollToSection('industries')} className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start">
+                  {gt('nav.industries')}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('domains')}
-                  className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start"
-                >
-                  {getTranslation(t, 'nav.expertise')}
+                <button type="button" onClick={() => scrollToSection('domains')} className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start">
+                  {gt('nav.expertise')}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('/about')}
-                  className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start"
-                >
-                  {getTranslation(t, 'nav.about')}
+                <button type="button" onClick={() => handleNavClick('/about')} className="text-lg font-medium text-foreground hover:text-primary transition-colors text-start">
+                  {gt('nav.about')}
                 </button>
                 <Button onClick={() => handleNavClick('/contact')} className="w-full">
-                  {getTranslation(t, 'nav.cta')}
+                  {gt('nav.cta')}
                 </Button>
               </div>
             </SheetContent>
