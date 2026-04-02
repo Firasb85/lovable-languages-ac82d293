@@ -2,21 +2,14 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useApp } from '@/contexts/AppContext';
-import { translations, getTranslation } from '@/i18n/translations';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export function CTABand() {
-  const { currentLanguage, contentOverrides } = useApp();
+  const { gt } = useTranslation();
   const navigate = useNavigate();
-  const t = translations[currentLanguage] || translations.en;
-
-  const title = contentOverrides.ctaTitle || getTranslation(t, 'cta.title');
-  const subtitle = contentOverrides.ctaSubtext || getTranslation(t, 'cta.subtitle');
-  const buttonText = contentOverrides.ctaButton || getTranslation(t, 'cta.button');
 
   return (
     <section className="relative py-20 overflow-hidden">
-      {/* Background image with overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed"
         style={{
@@ -27,10 +20,10 @@ export function CTABand() {
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground mb-4">
-          {title}
+          {gt('cta.title')}
         </h2>
         <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-          {subtitle}
+          {gt('cta.subtitle')}
         </p>
         <Button
           size="lg"
@@ -38,7 +31,7 @@ export function CTABand() {
           onClick={() => navigate('/contact')}
           className="text-lg px-8 glow-pulse"
         >
-          {buttonText}
+          {gt('cta.button')}
         </Button>
       </div>
     </section>
