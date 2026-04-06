@@ -1,6 +1,7 @@
 // Meridian Growth Advisory - Contact Page
-// UPDATED: Reframed as "Book a Discovery Session", real contact info added,
-//          WhatsApp CTA, updated geographic coverage
+// FIXED: addRequest payload matches Omit<ContactRequest, 'id' | 'status' | 'createdAt'>
+//        Uses 'message' field (not 'objective'), files as File[] not string[]
+//        Reframed as discovery session booking, real contact details added
 
 import { useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -14,12 +15,17 @@ import { Mail, Phone, Globe, MessageCircle, CheckCircle } from 'lucide-react';
 
 export function ContactPage() {
   const { gt } = useTranslation();
-  const { language, addRequest } = useApp();
+  const { language } = useApp();
+  const { addRequest } = useApp();
   const isRTL = language === 'ar' || language === 'kr';
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const [form, setForm] = useState({
-    fullName: '', company: '', email: '', phone: '', objective: '',
+    fullName: '',
+    company: '',
+    email: '',
+    phone: '',
+    message: '',
   });
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +35,11 @@ export function ContactPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     observerRef.current = new IntersectionObserver(
-      (entries) => { entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }); },
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      },
       { threshold: 0.1 }
     );
     document.querySelectorAll('.fade-up').forEach((el) => observerRef.current?.observe(el));
@@ -40,28 +50,39 @@ export function ContactPage() {
     const errs: Record<string, string> = {};
     if (!form.fullName.trim()) errs.fullName = 'Required';
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Valid email required';
-    if (!form.objective.trim()) errs.objective = 'Required';
+    if (!form.message.trim()) errs.message = 'Required';
     return errs;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 800));
-    addRequest?.({ ...form, files: files.map((f) => f.name), date: new Date().toISOString(), status: 'new' });
+    // Matches exactly: Omit<ContactRequest, 'id' | 'status' | 'createdAt'>
+    addRequest({
+      fullName: form.fullName,
+      company: form.company || undefined,
+      email: form.email || undefined,
+      phone: form.phone || undefined,
+      message: form.message,
+      files: files.length > 0 ? files : undefined,
+    });
     setSubmitting(false);
     setSubmitted(true);
   };
 
-  // Real contact details
   const contactEmail = 'rafi6630@aol.com';
   const contactPhone = '+964 750 677 7762';
   const whatsappLink = 'https://wa.me/9647506777762';
 
   return (
     <div className="min-h-screen">
+
       {/* ─── Header ─── */}
       <section className="navy-grid-bg pt-32 pb-16">
         <div className="container mx-auto px-4 text-center">
@@ -84,6 +105,7 @@ export function ContactPage() {
 
             {/* ─── Left: Info ─── */}
             <div className="space-y-8 fade-up">
+
               {/* Email */}
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -91,7 +113,10 @@ export function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1">{gt('contact.info.email')}</p>
-                  <a href={`mailto:${contactEmail}`} className="text-foreground font-semibold hover:text-primary transition-colors">
+                  <a
+                    href={`mailto:${contactEmail}`}
+                    className="text-foreground font-semibold hover:text-primary transition-colors"
+                  >
                     {contactEmail}
                   </a>
                 </div>
@@ -104,7 +129,10 @@ export function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1">{gt('contact.info.phone')}</p>
-                  <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="text-foreground font-semibold hover:text-primary transition-colors">
+                  <a
+                    href={`tel:${contactPhone.replace(/\s/g, '')}`}
+                    className="text-foreground font-semibold hover:text-primary transition-colors"
+                  >
                     {contactPhone}
                   </a>
                 </div>
@@ -112,7 +140,11 @@ export function ContactPage() {
 
               {/* WhatsApp CTA */}
               <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                <Button className="w-full gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white border-0">
+                <Button
+                  type="button"
+                  className="w-full gap-2 text-white border-0"
+                  style={{ backgroundColor: '#25D366' }}
+                >
                   <MessageCircle className="w-4 h-4" />
                   WhatsApp
                 </Button>
@@ -129,13 +161,18 @@ export function ContactPage() {
                 </div>
               </div>
 
-              {/* What to expect */}
+              {/* What happens next */}
               <div className="bg-secondary rounded-xl p-6 space-y-3">
-                <p className="font-semibold text-foreground text-sm">What happens next:</p>
+                <p className="font-semibold text-foreground text-sm">
+                  {gt('contact.info.subtitle')}
+                </p>
+                {[
+                  gt('hero.achievements.item1') || 'I review your submission within 24 hours',
+                ].map((_, i) => null)}
                 {[
                   'I review your submission within 24 hours',
                   'We schedule a free 30-minute discovery call',
-                  'I outline a potential path forward — at no cost',
+                  'I outline a path forward — at no cost',
                 ].map((step, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                     <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
@@ -157,6 +194,7 @@ export function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5 bg-secondary p-8 rounded-2xl">
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="fullName">{gt('contact.form.fullName')}</Label>
@@ -207,13 +245,13 @@ export function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="objective">{gt('contact.form.objective')}</Label>
+                    <Label htmlFor="message">{gt('contact.form.objective')}</Label>
                     <Textarea
-                      id="objective"
+                      id="message"
                       placeholder={gt('contact.form.objectivePlaceholder')}
-                      value={form.objective}
-                      onChange={(e) => setForm({ ...form, objective: e.target.value })}
-                      className={`min-h-[120px] ${errors.objective ? 'border-red-500' : ''}`}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className={`min-h-[120px] ${errors.message ? 'border-red-500' : ''}`}
                       dir={isRTL ? 'rtl' : 'ltr'}
                     />
                   </div>
@@ -230,12 +268,19 @@ export function ContactPage() {
                     <p className="text-xs text-muted-foreground">{gt('contact.form.attachmentsHint')}</p>
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full glow-pulse" disabled={submitting}>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full glow-pulse"
+                    disabled={submitting}
+                  >
                     {submitting ? gt('contact.form.submitting') : gt('contact.form.submit')}
                   </Button>
+
                 </form>
               )}
             </div>
+
           </div>
         </div>
       </section>
