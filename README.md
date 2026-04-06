@@ -59,8 +59,8 @@ Navigate to the footer and click the low-opacity **admin** button, or go directl
 
 | Field    | Value      |
 |----------|------------|
-| Username | `admin`    |
-| Password | `admin123` |
+| Username | ``    |
+| Password | `` |
 
 ## Project Structure
 
