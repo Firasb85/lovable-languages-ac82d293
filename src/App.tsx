@@ -6,6 +6,9 @@ import { AppProvider, useApp } from '@/contexts/AppContext';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import routes from './routes';
+import { WhatsAppButton } from '@/components/WhatsAppButton';
+// Then inside your return, anywhere at the root level:
+<WhatsAppButton />
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useApp();
