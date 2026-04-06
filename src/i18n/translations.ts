@@ -1,8 +1,22 @@
 // Meridian Growth Advisory — translations.ts
 // UPDATED: Value-first content rewrite based on Rafi Ceto's 25-year profile
-// Replaces service descriptions with client outcomes and business impact
+// IMPORTANT: exports both `translations` AND `getTranslation` (required by useTranslation hook)
 
-import type { Translations } from '@/types/types';
+import type { Translations, Translation } from '@/types/types';
+
+// ─── Helper used by useTranslation hook ───
+export function getTranslation(t: Translation, key: string): string {
+  const parts = key.split('.');
+  let current: Translation | string | string[] = t;
+  for (const part of parts) {
+    if (typeof current !== 'object' || current === null || Array.isArray(current)) return key;
+    current = (current as Translation)[part];
+    if (current === undefined) return key;
+  }
+  if (typeof current === 'string') return current;
+  if (Array.isArray(current)) return current.join(', ');
+  return key;
+}
 
 export const translations: Translations = {
   ar: {
@@ -78,11 +92,18 @@ export const translations: Translations = {
           proof: 'قدنا 8 برامج دخول سوق ناجحة عبر 4 دول في المنطقة',
           how: 'نبني نماذج توزيع وتسعير محققة الجدوى قبل أن تستثمر دولاراً واحداً',
         },
-        5: {
-          result: 'قرارات استثمار محكمة',
-          proof: 'ساهمنا في توجيه قرارات استثمار تجاوزت قيمتها 40 مليون دولار',
-          how: 'دراسات جدوى تجارية معمقة وتحليل تنافسي يحول البيانات إلى قرارات تنفيذية',
-        },
+      },
+    },
+    proof: {
+      badge: 'نتائج موثقة',
+      heading: 'أرقام حقيقية من مشاريع حقيقية',
+      items: {
+        1: { number: '$15M+', label: 'محفظة P&L يملكها ويديرها', context: 'تشكنت للاتصالات، شمال العراق' },
+        2: { number: '25%', label: 'نمو في الإيرادات خلال 6 أشهر', context: 'إعادة هيكلة استراتيجية المبيعات والتسعير' },
+        3: { number: '35%', label: 'تقليص معدل الإلغاء', context: 'عبر التحليلات التنبؤية ونمذجة شجرة القرار' },
+        4: { number: '50%', label: 'زيادة الطاقة الإنتاجية', context: 'مع تخفيض التكاليف التشغيلية 33% في آنٍ واحد' },
+        5: { number: '$5M+', label: 'أعمال جديدة تم تأمينها', context: 'مجموعة SITI — تداول وتوزيع وعقارات' },
+        6: { number: '$40M+', label: 'قرار استثماري تم توجيهه', context: 'دراسة جدوى لمصنع حلويات — تحليل منافسين وتسعير ومواصفات منتج' },
       },
     },
     industries: {
@@ -183,18 +204,6 @@ export const translations: Translations = {
         },
       },
     },
-    proof: {
-      badge: 'نتائج موثقة',
-      heading: 'أرقام حقيقية من مشاريع حقيقية',
-      items: {
-        1: { number: '$15M+', label: 'محفظة P&L يملكها ويديرها', context: 'تشكنت للاتصالات، شمال العراق' },
-        2: { number: '25%', label: 'نمو في الإيرادات خلال 6 أشهر', context: 'إعادة هيكلة استراتيجية المبيعات والتسعير' },
-        3: { number: '35%', label: 'تقليص معدل الإلغاء', context: 'عبر التحليلات التنبؤية ونمذجة شجرة القرار' },
-        4: { number: '50%', label: 'زيادة الطاقة الإنتاجية', context: 'مع تخفيض التكاليف التشغيلية 33% في آنٍ واحد' },
-        5: { number: '$5M+', label: 'أعمال جديدة تم تأمينها', context: 'مجموعة SITI — تداول وتوزيع وعقارات' },
-        6: { number: '$40M+', label: 'قرار استثماري تم توجيهه', context: 'دراسة جدوى لمصنع حلويات — تحليل منافسين وتسعير ومواصفات منتج' },
-      },
-    },
     about: {
       label: 'من أنا',
       heading: 'لم أبدأ في الاستشارات — ',
@@ -230,7 +239,7 @@ export const translations: Translations = {
         email: 'البريد الإلكتروني',
         phone: 'الهاتف / واتساب',
         coverage: 'التغطية الجغرافية',
-        coverageValue: 'العراق · كردستان · الكويت · دول الخليج · منطقة الشرق الأوسط وشمال أفريقيا',
+        coverageValue: 'العراق · كردستان · الكويت · دول الخليج · منطقة MENA',
       },
       form: {
         fullName: 'الاسم الكامل',
@@ -431,9 +440,9 @@ export const translations: Translations = {
     },
     hero: {
       eyebrow: 'Executive Commercial Advisor — MENA Region',
-      heading: 'Your business doesn\'t have a strategy problem — ',
+      heading: "Your business doesn't have a strategy problem — ",
       headingEm: 'it has an execution problem.',
-      subheading: 'I spent 25 years inside these businesses — as CCO, Commercial Director, and General Manager — before moving to consulting. I know what a broken distribution model looks like from inside a P&L, not from a slide deck.',
+      subheading: "I spent 25 years inside these businesses — as CCO, Commercial Director, and General Manager — before moving to consulting. I know what a broken distribution model looks like from inside a P&L, not from a slide deck.",
       primaryCta: 'Book a Free Discovery Session',
       secondaryCta: 'See What I Fix',
       stats: {
@@ -456,7 +465,7 @@ export const translations: Translations = {
         1: {
           stat: '25+ Years',
           title: 'Real operational experience',
-          desc: 'I was never an outside advisor — I was the executive who owned the P&L, built the teams, and was accountable for the numbers.',
+          desc: "I was never an outside advisor — I was the executive who owned the P&L, built the teams, and was accountable for the numbers.",
         },
         2: {
           stat: '15+ Projects',
@@ -466,40 +475,47 @@ export const translations: Translations = {
         3: {
           stat: '4 Countries',
           title: 'Deep local market knowledge',
-          desc: 'Iraq, Kurdistan, Kuwait, and the Gulf — built over 25 years on the ground, not from an office abroad.',
+          desc: "Iraq, Kurdistan, Kuwait, and the Gulf — built over 25 years on the ground, not from an office abroad.",
         },
       },
     },
     outcomes: {
       badge: 'What you get',
       heading: 'The outcomes we deliver',
-      subheading: 'No reports that sit on shelves. We work inside your business until the result is real.',
+      subheading: "No reports that sit on shelves. We work inside your business until the result is real.",
       items: {
         1: {
           result: 'Higher revenue',
           proof: '25% growth in 6 months on a $15M+ P&L',
-          how: 'We re-engineer your sales strategy, pricing architecture, and channel structures to stop revenue leakage at its source.',
+          how: 'We re-engineer your sales strategy, pricing architecture, and channel structures to stop revenue leakage.',
         },
         2: {
           result: 'Lower operating costs',
           proof: '33% cost reduction while increasing capacity 50% in Northern Iraq telecom',
-          how: 'We restructure distribution networks and operations for maximum efficiency — without cutting what matters.',
+          how: 'We restructure distribution networks and operations for maximum efficiency without cutting what matters.',
         },
         3: {
           result: 'Better customer retention',
           proof: '35% churn reduction using Decision Tree modelling and predictive analytics',
-          how: 'We build data-driven CRM and retention systems that turn churn from a gut-feel problem into a measurable, solvable one.',
+          how: 'We build data-driven CRM and retention systems that turn churn from a gut-feel problem into a solvable one.',
         },
         4: {
           result: 'Successful market entry',
           proof: 'Led 8 market entry programs across 4 countries in the region',
-          how: 'We build validated pricing and distribution models before you invest a dollar — so launch is a confirmation, not a gamble.',
+          how: 'We build validated pricing and distribution models before you invest a dollar.',
         },
-        5: {
-          result: 'Investment-grade decisions',
-          proof: 'Shaped $40M+ investment decisions with field-validated analysis',
-          how: 'Deep commercial feasibility studies and competitive intelligence that turns market data into executive decisions.',
-        },
+      },
+    },
+    proof: {
+      badge: 'Verified results',
+      heading: 'Real numbers from real projects',
+      items: {
+        1: { number: '$15M+', label: 'P&L owned and managed', context: 'Tishknet Telecom, Northern Iraq' },
+        2: { number: '25%', label: 'Revenue growth in 6 months', context: 'Sales strategy and pricing restructure' },
+        3: { number: '35%', label: 'Churn reduction', context: 'Predictive analytics and Decision Tree modelling' },
+        4: { number: '50%', label: 'Capacity increase', context: 'While cutting operating costs 33% simultaneously' },
+        5: { number: '$5M+', label: 'New business secured', context: 'SITI GROUP — trading, distribution, real estate' },
+        6: { number: '$40M+', label: 'Investment decision shaped', context: 'Confectionery factory feasibility — competitor analysis, pricing, product specs' },
       },
     },
     industries: {
@@ -532,19 +548,19 @@ export const translations: Translations = {
       label: 'Results',
       heading: 'The problems we solve',
       ctaText: 'Facing one of these challenges?',
-      ctaButton: 'Talk to us — it\'s free',
+      ctaButton: "Talk to us — it's free",
       cards: {
         1: {
           title: 'Revenue is stagnant or declining',
-          description: 'Most revenue problems aren\'t sales problems — they\'re structural problems in pricing, channel design, or market definition.',
+          description: "Most revenue problems aren't sales problems — they're structural problems in pricing, channel design, or market definition.",
           detail1Title: 'What we typically find',
-          detail1: 'Channel leakage draining 20–30% of revenue undetected. Pricing structures that don\'t reflect real product value. Sales teams that are busy but not productive.',
+          detail1: 'Channel leakage draining 20–30% of revenue undetected. Pricing structures that do not reflect real product value. Sales teams that are busy but not productive.',
           detail2Title: 'What we do about it',
           detail2: 'A full commercial audit identifies the leakage points, followed by revenue structure re-engineering with clear KPIs and weekly monitoring until growth is confirmed.',
         },
         2: {
           title: 'Operating costs are out of control',
-          description: 'Margin isn\'t recovered by cutting spend — it\'s recovered by re-engineering how work gets done.',
+          description: "Margin isn't recovered by cutting spend — it's recovered by re-engineering how work gets done.",
           detail1Title: 'What we typically find',
           detail1: 'High distribution costs from an unoptimised network. Multiple vendors with weak contracts. Manual processes where automation should exist.',
           detail2Title: 'What we do about it',
@@ -552,25 +568,25 @@ export const translations: Translations = {
         },
         3: {
           title: 'Distributors consistently miss targets',
-          description: 'Weak channel performance is rarely a people problem — it\'s almost always a system and incentive problem.',
+          description: "Weak channel performance is rarely a people problem — it's almost always a system and incentive problem.",
           detail1Title: 'What we typically find',
           detail1: 'Incentive structures misaligned with company priorities. No clear KPIs at the distributor level. Poor territory planning creating conflict rather than coverage.',
           detail2Title: 'What we do about it',
-          detail2: 'We redesign the entire channel model — from incentive structures to territory planning and performance monitoring systems — and implement it with your team step by step.',
+          detail2: 'We redesign the entire channel model — from incentive structures to territory planning and performance monitoring — and implement it with your team step by step.',
         },
         4: {
           title: 'Market entry is draining resources without results',
           description: 'Most market entry failures happen before launch — caused by feasibility studies built on assumptions, not data.',
           detail1Title: 'What we typically find',
-          detail1: 'Shallow competitive analysis that doesn\'t reflect real market dynamics. Pricing models untested against local reality. Distribution channels chosen on paper, not on the ground.',
+          detail1: "Shallow competitive analysis that doesn't reflect real market dynamics. Pricing models untested against local reality. Distribution channels chosen on paper, not on the ground.",
           detail2Title: 'What we do about it',
           detail2: 'We have led 8 successful market entry programs in the region — including analysis that shaped a $40M investment decision in FMCG manufacturing.',
         },
         5: {
-          title: 'Sales team is busy but the numbers don\'t move',
-          description: 'Activity is not productivity. If your team is working hard but the pipeline isn\'t converting, the problem is structural.',
+          title: "Sales team is busy but the numbers don't move",
+          description: "Activity is not productivity. If your team is working hard but the pipeline isn't converting, the problem is structural.",
           detail1Title: 'What we typically find',
-          detail1: 'No clear ideal customer profile, so effort is scattered. Pipeline stages are undefined or misunderstood. No CRM system translating activity into revenue forecasting.',
+          detail1: 'No clear ideal customer profile, so effort is scattered. Pipeline stages are undefined. No CRM system translating activity into revenue forecasting.',
           detail2Title: 'What we do about it',
           detail2: 'We design CRM strategy, incentive structures, territory planning, and field KPIs — then implement them with your team until the system runs independently.',
         },
@@ -578,47 +594,35 @@ export const translations: Translations = {
           title: 'You need a trusted commercial partner in the local market',
           description: 'Entering Iraq and Gulf markets requires local network knowledge that cannot be acquired from an office abroad.',
           detail1Title: 'What we typically find',
-          detail1: 'Foreign companies choose distributors based on availability, not capability. Partnerships that look strong on paper collapse in execution. Cultural gaps in negotiation and expectations.',
+          detail1: 'Foreign companies choose distributors based on availability, not capability. Partnerships that look strong on paper collapse in execution.',
           detail2Title: 'What we do about it',
           detail2: 'We have a trusted network in Iraq, Kurdistan, and the Gulf built over 25 years. We screen potential partners and structure agreements that protect your interests.',
         },
         7: {
           title: 'Investment decisions need field-level validation',
-          description: 'Financial models alone aren\'t enough — local markets have their own logic that standard models don\'t capture.',
+          description: "Financial models alone aren't enough — local markets have their own logic that standard models don't capture.",
           detail1Title: 'What we typically find',
-          detail1: 'Investors relying on secondary data that doesn\'t reflect local reality. Feasibility studies prepared from distant offices without field testing. Unaccounted regulatory and cultural risks.',
+          detail1: "Investors relying on secondary data that doesn't reflect local reality. Feasibility studies prepared from distant offices without field testing.",
           detail2Title: 'What we do about it',
-          detail2: 'We conduct full field validation — market visits, distributor interviews, real competitive analysis, realistic pricing modelling. Delivered this for a $40M confectionery manufacturing investment.',
+          detail2: 'We conduct full field validation — market visits, distributor interviews, real competitive analysis, realistic pricing modelling. Delivered for a $40M confectionery investment.',
         },
         8: {
-          title: 'Your organisation isn\'t built for the growth you\'re planning',
-          description: 'Fast growth exposes structural fragility. If your operations are designed for a smaller scale, expansion will break them.',
+          title: "Your organisation isn't built for the growth you're planning",
+          description: "Fast growth exposes structural fragility. If your operations are designed for a smaller scale, expansion will break them.",
           detail1Title: 'What we typically find',
-          detail1: 'Organisational structures that evolved accidentally, not by design. Undocumented processes dependent on specific individuals. Departments operating in silos with no commercial coordination.',
+          detail1: 'Organisational structures that evolved accidentally. Undocumented processes dependent on specific individuals. Departments operating in silos.',
           detail2Title: 'What we do about it',
           detail2: 'We design the organisational structure, strategic playbooks, SOPs, and hiring plans that turn chaotic growth into a predictable, scalable commercial machine.',
         },
       },
     },
-    proof: {
-      badge: 'Verified results',
-      heading: 'Real numbers from real projects',
-      items: {
-        1: { number: '$15M+', label: 'P&L owned and managed', context: 'Tishknet Telecom, Northern Iraq' },
-        2: { number: '25%', label: 'Revenue growth in 6 months', context: 'Sales strategy and pricing restructure' },
-        3: { number: '35%', label: 'Churn reduction', context: 'Predictive analytics and Decision Tree modelling' },
-        4: { number: '50%', label: 'Capacity increase', context: 'While cutting operating costs 33% simultaneously' },
-        5: { number: '$5M+', label: 'New business secured', context: 'SITI GROUP — trading, distribution, real estate' },
-        6: { number: '$40M+', label: 'Investment decision shaped', context: 'Confectionery factory feasibility — competitor analysis, pricing, product specs' },
-      },
-    },
     about: {
       label: 'About',
-      heading: 'I didn\'t start in consulting — ',
+      heading: "I didn't start in consulting — ",
       headingEm: 'I started in operations.',
       heading2: '',
-      body1: 'I spent 25 years inside these businesses — as CCO, Commercial Director, and General Manager — across Telecom, FMCG, Manufacturing, and Real Estate in Iraq, Kurdistan, and the Gulf. I wasn\'t reporting on performance. I was accountable for it.',
-      body2: 'That\'s the fundamental difference. I know what a broken distribution model looks like from inside a P&L. I know what makes one distributor outperform another. I know why market entry strategies that look logical on paper fail in execution. When I work with you, I bring 25 years of operational scar tissue — not another framework.',
+      body1: "I spent 25 years inside these businesses — as CCO, Commercial Director, and General Manager — across Telecom, FMCG, Manufacturing, and Real Estate in Iraq, Kurdistan, and the Gulf. I wasn't reporting on performance. I was accountable for it.",
+      body2: "That's the fundamental difference. I know what a broken distribution model looks like from inside a P&L. I know what makes one distributor outperform another. I know why market entry strategies that look logical on paper fail in execution. When I work with you, I bring 25 years of operational scar tissue — not another framework.",
       body3: 'Results only. No reports that sit on shelves.',
       values: {
         1: {
@@ -627,11 +631,11 @@ export const translations: Translations = {
         },
         2: {
           name: 'Execution inside the business',
-          description: 'I don\'t hand over a report and walk away — I work alongside your team until the change is real.',
+          description: "I don't hand over a report and walk away — I work alongside your team until the change is real.",
         },
         3: {
           name: 'Local market knowledge',
-          description: 'Iraq, Kurdistan, and the Gulf — not markets I study from afar, but markets I\'ve built in for 25 years.',
+          description: "Iraq, Kurdistan, and the Gulf — not markets I study from afar, but markets I've built in for 25 years.",
         },
         4: {
           name: 'Data, not instinct',
@@ -640,9 +644,9 @@ export const translations: Translations = {
       },
     },
     contact: {
-      heading: 'Talk to an expert — it\'s free',
+      heading: "Talk to an expert — it's free",
       info: {
-        title: 'Let\'s start the conversation',
+        title: "Let's start the conversation",
         subtitle: 'Free 30-minute discovery session. We review your core commercial challenge and map a potential path forward — at no cost.',
         email: 'Email',
         phone: 'Phone / WhatsApp',
@@ -659,7 +663,7 @@ export const translations: Translations = {
         phone: 'Phone',
         phonePlaceholder: '+964 7XX XXX XXXX',
         objective: 'Core commercial challenge',
-        objectivePlaceholder: 'Describe the challenge you\'re facing — what isn\'t working as it should?',
+        objectivePlaceholder: "Describe the challenge you're facing — what isn't working as it should?",
         attachments: 'Supporting documents',
         attachmentsHint: 'Optional — any data, reports, or studies relevant to your situation',
         submit: 'Book my discovery session',
@@ -667,12 +671,12 @@ export const translations: Translations = {
       },
       success: {
         title: 'Received',
-        message: 'I\'ll be in touch within 24 hours to schedule the discovery session.',
+        message: "I'll be in touch within 24 hours to schedule the discovery session.",
       },
     },
     cta: {
-      title: 'Your commercial problem has a solution — and it\'s closer than you think',
-      subtitle: 'Most businesses I work with didn\'t need a new strategy — they needed the right execution of what they already had. If your revenue doesn\'t reflect your actual potential, the problem is likely structural. That\'s exactly what I fix.',
+      title: "Your commercial problem has a solution — and it's closer than you think",
+      subtitle: "Most businesses I work with didn't need a new strategy — they needed the right execution of what they already had. If your revenue doesn't reflect your actual potential, the problem is likely structural. That's exactly what I fix.",
       button: 'Book a free discovery session',
     },
     footer: {
@@ -847,10 +851,10 @@ export const translations: Translations = {
       cta: 'جلسەیەکی بەخۆڕایی بسپێرە',
     },
     hero: {
-      eyebrow: 'ڕاوێژکاری تجاری تنفیذی — منطقة MENA',
+      eyebrow: 'ڕاوێژکاری تجاری تنفیذی — ناوچەی MENA',
       heading: 'کاروبارەکەت کێشەی ستراتیژی نییە — ',
       headingEm: 'کێشەی جێبەجێکردنە.',
-      subheading: '25 ساڵ لەناو ئەم کاروبارانەدا مامەڵەم کرد — وەک CCO، بەرێوەبەری تجاری، و بەرێوەبەری گشتی — پێش ئەوەی بچمە ناو ڕاوێژکاری. دەزانم نموونەی دابەشکردنی شکستی چۆن لەناو P&Lدا دیده دەکرێت، نە لە سلایدێک.',
+      subheading: '25 ساڵ لەناو ئەم کاروبارانەدا مامەڵەم کرد — وەک CCO، بەرێوەبەری تجاری، و بەرێوەبەری گشتی — پێش ئەوەی بچمە ناو ڕاوێژکاری. دەزانم نموونەی دابەشکردنی شکستی چۆن لەناو P&L دا دیده دەکرێت.',
       primaryCta: 'جلسەیەکی بەخۆڕایی بسپێرە',
       secondaryCta: 'ببینە چی چارەسەر دەکەم',
       stats: {
@@ -860,10 +864,10 @@ export const translations: Translations = {
       },
       achievements: {
         title: 'ئەنجامی پشتڕاستکراو',
-        item1: 'گەشەی 25% لە داهات لە 6 مانگدا لەسەر P&L ی 15 ملیۆن دۆلار',
+        item1: 'گەشەی 25% لە داهات لە 6 مانگدا لەسەر P&L ی 15+ ملیۆن دۆلار',
         item2: 'کەمکردنەوەی تێچووی 33% لەکاتی زیادکردنی کاپاسیتەی 50%',
         item3: 'کەمکردنەوەی churn ی 35% لە ڕێگەی تحلیلی پێشبینیکاری',
-        item4: 'هەڵسەنگاندنی وەبەرهێنانی 40+ ملیۆن دۆلار بە تایبەتمەندی',
+        item4: 'هەڵسەنگاندنی وەبەرهێنانی 40+ ملیۆن دۆلار',
       },
     },
     whyUs: {
@@ -878,12 +882,12 @@ export const translations: Translations = {
         2: {
           stat: '15+ پڕۆژە',
           title: 'ئەنجامی پێوانەکراو',
-          desc: 'گەشەی ناوەندی 35% لە داهات لە پڕۆژەکانی گۆڕانکاری تجاری — بە KPIی ڕوون بۆ هەر مشارکەت',
+          desc: 'گەشەی ناوەندی 35% لە داهات لە پڕۆژەکانی گۆڕانکاری تجاری — بە KPI ی ڕوون',
         },
         3: {
           stat: '4 وڵات',
           title: 'زانیاری قووڵ لە بازاڕی ناوخۆیی',
-          desc: 'عێراق، کوردستان، کووەیت، و خەلیج — لە 25 ساڵ کاری بنەڕەتدا نا لە مەکتەبێکی دوور',
+          desc: 'عێراق، کوردستان، کووەیت، و خەلیج — لە 25 ساڵ کاری بنەڕەتدا',
         },
       },
     },
@@ -895,28 +899,35 @@ export const translations: Translations = {
         1: {
           result: 'داهاتی بەرز',
           proof: 'گەشەی 25% لە 6 مانگدا لەسەر P&L ی 15+ ملیۆن دۆلار',
-          how: 'ستراتیژی فرۆشتن و نرخگذاری و ڕێکخراوەی کانالەکانت دووبارە ئەندازیاری دەکەین بۆ وەستاندنی چۆژینەوەی داهات',
+          how: 'ستراتیژی فرۆشتن و نرخگذاری دووبارە ئەندازیاری دەکەین بۆ وەستاندنی چۆژینەوەی داهات',
         },
         2: {
           result: 'تێچووی کارگێڕی کەمتر',
-          proof: 'کەمکردنەوەی تێچووی 33% لەکاتی زیادکردنی کاپاسیتەی 50% لە تێلیکۆمی باکووری عێراق',
-          how: 'تۆڕەکانی دابەشکردن و کارەکان دووبارە دیزاین دەکەین بۆ زۆرترین کارایی — بەبێ بڕیندانی ئەوەی گرنگە',
+          proof: 'کەمکردنەوەی تێچووی 33% لەکاتی زیادکردنی کاپاسیتەی 50%',
+          how: 'تۆڕەکانی دابەشکردن دووبارە دیزاین دەکەین بۆ زۆرترین کارایی',
         },
         3: {
           result: 'گرتنەوەی باشتری کڕیار',
-          proof: 'کەمکردنەوەی churn ی 35% لە ڕێگەی نموونەی Decision Tree و تحلیلی پێشبینیکاری',
-          how: 'سیستەمی CRM و پرۆگرامی گرتنەوە دادەنێین کە بەرپایەی داتا churnی گۆڕ بۆ دڵسۆزی',
+          proof: 'کەمکردنەوەی churn ی 35% لە ڕێگەی تحلیلی پێشبینیکاری',
+          how: 'سیستەمی CRM و پرۆگرامی گرتنەوە دادەنێین کە بەرپایەی داتا',
         },
         4: {
           result: 'چوونەژوورەوەی بازاڕی سەرکەوتوو',
-          proof: '8 پرۆگرامی چوونەژوورەوەی بازاڕ لە 4 وڵاتی ناوچەکەدا بەڕێوەمان برد',
-          how: 'نموونەی دابەشکردن و نرخگذاری پشتڕاستکراو دادەنێین پێش ئەوەی یەک دۆلار وەبەرهێنان بکەیت',
+          proof: '8 پرۆگرامی چوونەژوورەوەی بازاڕ لە 4 وڵاتدا',
+          how: 'نموونەی دابەشکردن و نرخگذاری پشتڕاستکراو پێش وەبەرهێنان',
         },
-        5: {
-          result: 'بڕیاری وەبەرهێنانی باشکراو',
-          proof: '40+ ملیۆن دۆلار بڕیاری وەبەرهێنان شێوەمان دا',
-          how: 'خوێندنەوەی گونجاوی تجاری قووڵ و تیژهوشی کەڕابووی کە داتای بازاڕ دەگۆڕێت بۆ بڕیاری بەڕێوەبەری',
-        },
+      },
+    },
+    proof: {
+      badge: 'ئەنجامی پشتڕاستکراو',
+      heading: 'ژمارەی ڕاستەقینە لە پڕۆژەی ڕاستەقینە',
+      items: {
+        1: { number: '$15M+', label: 'P&L خاوەنداریکرا و بەڕێوەبراوە', context: 'تشکنت تێلیکۆم، باکووری عێراق' },
+        2: { number: '25%', label: 'گەشەی داهات لە 6 مانگدا', context: 'دووبارە ڕێکخستنی ستراتیژی فرۆشتن' },
+        3: { number: '35%', label: 'کەمکردنەوەی churn', context: 'تحلیلی پێشبینیکاری و Decision Tree' },
+        4: { number: '50%', label: 'زیادکردنی کاپاسیتە', context: 'لەکاتی بڕینی تێچووی 33% لەکاتی یەکدا' },
+        5: { number: '$5M+', label: 'کاروباری نوێ پتەوکراوە', context: 'گروپی SITI — فرۆشتن، دابەشکردن، خانووبەرە' },
+        6: { number: '$40M+', label: 'بڕیاری وەبەرهێنان شێوەدراوە', context: 'گونجاوی کارخانەی شیرینی' },
       },
     },
     industries: {
@@ -925,23 +936,23 @@ export const translations: Translations = {
       cards: {
         realestate: {
           name: 'خانووبەرە',
-          description: 'خوێندنەوەی گونجاوی بگۆڕە بۆ بڕیاری وەبەرهێنانی متمانەپێکراو — و گەڕانەوەی پیشبینیکراو بگەیەنە، نەک تەنها نموونەکراو.',
+          description: 'خوێندنەوەی گونجاوی بگۆڕە بۆ بڕیاری وەبەرهێنانی متمانەپێکراو',
         },
         fmcg: {
           name: 'کاڵا بەکارهێنەرییەکان',
-          description: 'لە دابەشکردنی پەڕاکەندە بۆ تۆڕێکی توند کە ڕەفەکە دەسەڵات دەکات و قازانجی ڕاستەقینە دەدات.',
+          description: 'لە دابەشکردنی پەڕاکەندە بۆ تۆڕێکی توند کە ڕەفەکە دەسەڵات دەکات',
         },
         fnb: {
           name: 'خۆراک و خواردنەوە',
-          description: 'چەمکەکانی چێشتخانە و فرانچایز فراوان بکە بە وردی کارگێڕی کە ڕاستییی بازاڕی ناوخۆیی تانی دەکاتەوە.',
+          description: 'چەمکەکانی چێشتخانە فراوان بکە بە وردی کارگێڕی تەواو',
         },
         telecom: {
           name: 'تەلیکۆم',
-          description: 'بەشداربووانی گۆڕان بگۆڕە بۆ دڵسۆزان — و مەکینەی داهاتی B2B ی بەردەوام بنیاد بنێ.',
+          description: 'بەشداربووانی گۆڕان بگۆڕە بۆ دڵسۆزان و مەکینەی داهاتی B2B بنیاد بنێ',
         },
         distribution: {
           name: 'دابەشکردن و لۆجستیک',
-          description: 'تۆڕەکانی دابەشکردن کە تێچوو دەبڕن و داپۆشینی دڵنیادەکەن — لە تحلیلی وردی تێچووی خزمەتدا بنیادنراون.',
+          description: 'تۆڕەکانی دابەشکردن کە تێچوو دەبڕن و داپۆشینی دڵنیادەکەن',
         },
       },
     },
@@ -953,80 +964,68 @@ export const translations: Translations = {
       cards: {
         1: {
           title: 'داهات ڕاوەستاوە یان لە داکەوتنەدایە',
-          description: 'زۆرینەی کێشەکانی داهات کێشەی فرۆشتن نین — بلکو کێشەی هیکەلی لە نرخگذاری، دیزاینی کانال، یان پێناسەی بازاڕین.',
+          description: 'زۆرینەی کێشەکانی داهات کێشەی فرۆشتن نین — بلکو کێشەی هیکەلی لە نرخگذاری یان کانالن.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'چۆژینەوەی کانال کە 20-30% ی داهات بەبێ بیرکردنەوە ئەوسا دەبات. ڕێکخراوەی نرخگذاری کە نرخی ڕاستەقینەی بەرهەم نییە. تیمەکانی فرۆشتن بەکارن بەڵام بەنتیجە نین.',
+          detail1: 'چۆژینەوەی کانال کە 20-30% ی داهات بەبێ بیرکردنەوە ئەوسا دەبات. ڕێکخراوەی نرخگذاری کە نرخی ڕاستەقینەی بەرهەم نییە.',
           detail2Title: 'چی دەکەین',
-          detail2: 'تدقیقی تجاری تەواو خاڵەکانی چۆژینەوە دیاری دەکات، لەدوای ئەوەش دووبارە ئەندازیاری هیکەلی داهات بە KPI ی ڕوون و چاودێریی هەفتانە تا گەشە پشتڕاست دەکرێتەوە.',
+          detail2: 'تدقیقی تجاری تەواو خاڵەکانی چۆژینەوە دیاری دەکات، لەدوای ئەوەش دووبارە ئەندازیاری هیکەلی داهات.',
         },
         2: {
           title: 'تێچووی کارگێڕی لە کۆنترۆڵدەرچووە',
-          description: 'هەڵە بە کەمکردنەوەی مەسرەف دانەوەرگیرێت — بە دووبارە ئەندازیاری ئەوەی کار چۆن ئەنجام دەدرێت دانەوەرگیرێت.',
+          description: 'هەڵە بە دووبارە ئەندازیاری ئەوەی کار چۆن ئەنجام دەدرێت دانەوەرگیرێت.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'تێچووی دابەشکردنی بەرز بەهۆی تۆڕی باشنەکراو. فرۆشیاری زۆر بە گرێبەستی qەلەوز. پرۆسەی دەستی لەشوێنی کە ئۆتۆماسیۆن دەبێ.',
+          detail1: 'تێچووی دابەشکردنی بەرز بەهۆی تۆڕی باشنەکراو. فرۆشیاری زۆر بە گرێبەستی qەلەوز.',
           detail2Title: 'چی دەکەین',
-          detail2: 'تێچووی کارگێڕی 33% لە کارەکانی تێلیکۆم کەمیان کردەوە لەکاتی زیادکردنی ئامادەیی بەرهەمئاوردنی 50% — بەبێ یەک بەکارهێنەرەکەش لازیم بکرێت.',
+          detail2: 'تێچووی کارگێڕی 33% کەمیان کردەوە لەکاتی زیادکردنی کاپاسیتەی 50%.',
         },
         3: {
           title: 'دابەشکەران بەردەوام ئامانجەکان لادەدەن',
-          description: 'ئەدای کانالی کەواز کەمتر لەوە هەیە کە کێشەی کەسیی بێت — بەتەقریبی هەمیشە کێشەی سیستەم و هاندەرە.',
+          description: 'ئەدای کانالی کەواز بەتەقریبی هەمیشە کێشەی سیستەم و هاندەرە.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'هیکەلی هاندەر نەیگونجاو بە پەیامەکانی کۆمپانیا. هیچ KPI ی ڕوونی لەسەر ئاستی دابەشکەر نییە. پلانکردنی خراپی ناوچە کشاکش دروست دەکات لە بۆ داپۆشین.',
+          detail1: 'هیکەلی هاندەر نەیگونجاو بە پەیامەکانی کۆمپانیا. هیچ KPI ی ڕوونی لەسەر ئاستی دابەشکەر نییە.',
           detail2Title: 'چی دەکەین',
-          detail2: 'نموونەی کانالی تەواو دووبارە دیزاین دەکەین — لە هیکەلی هاندەر بۆ پلانکردنی ناوچە و سیستەمەکانی چاودێریی ئەدا — و لەگەڵ تیمەکەت گام بە گام جێبەجێی دەکەین.',
+          detail2: 'نموونەی کانالی تەواو دووبارە دیزاین دەکەین و لەگەڵ تیمەکەت گام بە گام جێبەجێی دەکەین.',
         },
         4: {
           title: 'چوونەژوورەوەی بازاڕ سەرچاوەکان بەبێ ئەنجام ئاوادە دەکات',
-          description: 'زۆرینەی شکستی چوونەژوورەوەی بازاڕ پێش ئەوەی دەست پێ بکات ئەتفاق دەکەوێت — بەهۆی خوێندنەوەی گونجاوی بنیادنراو لەسەر وەهمەکانی نەک داتا.',
+          description: 'زۆرینەی شکستی چوونەژوورەوەی بازاڕ پێش ئەوەی دەست پێ بکات ئەتفاق دەکەوێت.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'تحلیلی کەڕابووی ئایەتی کە دینامیکی بازاڕی ڕاستەقینە نییە. نموونەی نرخگذاری کە لەدژی ڕاستییی ناوخۆیی تاقی نەکراوەتەوە. کانالەکانی دابەشکردن لەسەر کاغەز هەڵبژێردراون نەک لە بنەچەکەدا.',
+          detail1: 'تحلیلی کەڕابووی ئایەتی کە دینامیکی بازاڕی ڕاستەقینە نییە. نموونەی نرخگذاری کە تاقی نەکراوەتەوە.',
           detail2Title: 'چی دەکەین',
-          detail2: '8 پرۆگرامی چوونەژوورەوەی بازاڕی سەرکەوتوو لە ناوچەکەدا مانبەرداریمان کردووە — لەوانە تحلیلیش کە بڕیاری وەبەرهێنانی 40 ملیۆن دۆلار لە پیشەسازی FMCG شێوەی دا.',
+          detail2: '8 پرۆگرامی چوونەژوورەوەی بازاڕی سەرکەوتوو لە ناوچەکەدا مانبەرداریمان کردووە.',
         },
         5: {
           title: 'تیمی فرۆشتن بەکارە بەڵام ژمارەکان ناجوڵێن',
-          description: 'چالاکی بەرهەمداری نییە. ئەگەر تیمەکەت بە سەختی کار دەکات بەڵام pipeline دەگۆڕێت بۆ داهات، کێشەکە هیکەلییە.',
+          description: 'چالاکی بەرهەمداری نییە. ئەگەر pipeline دەگۆڕێت بۆ داهات کێشەکە هیکەلییە.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'هیچ پرۆفایلی ڕوونی کڕیاری ئیدیاڵ نییە، بۆیە هەوڵ بەڕاکەندەیە. قۆناغەکانی pipeline پێناسەنەکراون یان بە هەڵەیی تێگەیشتراون. هیچ سیستەمی CRM چالاکی وانەگۆڕێت بۆ پێشبینیی داهات.',
+          detail1: 'هیچ پرۆفایلی ڕوونی کڕیاری ئیدیاڵ نییە. هیچ سیستەمی CRM چالاکی وانەگۆڕێت بۆ پێشبینیی داهات.',
           detail2Title: 'چی دەکەین',
-          detail2: 'ستراتیژی CRM، هیکەلی هاندەر، پلانکردنی ناوچە، و KPI ی مەیدانی دیزاین دەکەین — پاشان لەگەڵ تیمەکەت جێبەجێیان دەکەین تا سیستەمەکە بەخۆیی کار بکات.',
+          detail2: 'ستراتیژی CRM و هیکەلی هاندەر و پلانکردنی ناوچە دیزاین دەکەین و جێبەجێیان دەکەین.',
         },
         6: {
-          title: 'پێویستت بە هاوبەشێکی تجاری متمانەپێکراو لە بازاڕی ناوخۆیی هەیە',
-          description: 'چوونەژوورەوەی بازاڕەکانی عێراق و خەلیج پێویستی بە زانیاری شبکەی ناوخۆیی هەیە کە لە مەکتەبێکی دوور بەدەستنایێت.',
+          title: 'پێویستت بە هاوبەشێکی تجاری متمانەپێکراو هەیە',
+          description: 'چوونەژوورەوەی بازاڕەکانی عێراق و خەلیج پێویستی بە زانیاری شبکەی ناوخۆیی هەیە.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'کۆمپانیاکانی بیانی دابەشکەر هەڵدەبژێرن بەپایەی بەردەستی نەک ئەھلییەت. هاوبەشییەکان لە کاغەزدا بەهێز دیده دەکرێن بەڵام لە جێبەجێکردندا دەکەوێنە ژێر. بۆشایی کەلتووری لە گفتوگۆ و چاوەڕوانییەکاندا.',
+          detail1: 'کۆمپانیاکانی بیانی دابەشکەر هەڵدەبژێرن بەپایەی بەردەستی نەک ئەھلییەت.',
           detail2Title: 'چی دەکەین',
-          detail2: 'تۆڕی متمانەپێکراو لە عێراق، کوردستان، و خەلیج داریمان کردووە لە 25 ساڵدا. هاوبەشی پتانتیاڵ دەپشکنین و ڕێکخراوەی گرێبەست دادەنێین کە بەرژەوەندییەکانت دەپارێزێت.',
+          detail2: 'تۆڕی متمانەپێکراو لە عێراق، کوردستان، و خەلیج داریمان کردووە لە 25 ساڵدا.',
         },
         7: {
           title: 'بڕیارەکانی وەبەرهێنان پێویستی بە پشتڕاستکردنەوەی مەیدانی هەیە',
-          description: 'نموونەی دارایی بەتەنها بەس نییە — بازاڕی ناوخۆیی منطقی تایبەتی خۆی هەیە کە نموونەی ستانداردەکان دەیگرن.',
+          description: 'نموونەی دارایی بەتەنها بەس نییە — بازاڕی ناوخۆیی منطقی تایبەتی خۆی هەیە.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'وەبەرهێنەران خوان دەدەن لەسەر داتای دووەم کە ڕاستییی ناوخۆیی نییە. خوێندنەوەکانی گونجاوی لە مەکتەبی دوور ئامادەدەکرێن بەبێ تاقیکردنەوەی مەیدانی. مەترسی ڕێکوپێک و کەلتووری کە بنەخسەت نەدراوە.',
+          detail1: 'وەبەرهێنەران خوان دەدەن لەسەر داتای دووەم کە ڕاستییی ناوخۆیی نییە.',
           detail2Title: 'چی دەکەین',
-          detail2: 'پشتڕاستکردنەوەی مەیدانی تەواو دەگەیەنین — سەردانی بازاڕ، چاوپێکەوتنی دابەشکەران، تحلیلی کەڕابووی ڕاستەقینە، نموونەی نرخگذاری ڕاستەقینە. ئەمەی گەیاندین بۆ بڕیاری وەبەرهێنانی 40 ملیۆن دۆلار لە کارخانەی شیرینی.',
+          detail2: 'پشتڕاستکردنەوەی مەیدانی تەواو — سەردانی بازاڕ، چاوپێکەوتنی دابەشکەران، تحلیلی ڕاستەقینە.',
         },
         8: {
           title: 'ڕێکخراوەکەت بۆ ئەو گەشەیەی کە پلانت دەکەی بنیادنراوە نییە',
-          description: 'گەشەی خێرا شکنراوی هیکەلی ئاشکرا دەکات. ئەگەر کارەکانت بۆ قەبارەیەکی بچووکتر دیزاینکراون، فراوانکردن دەیشکێنن.',
+          description: 'گەشەی خێرا شکنراوی هیکەلی ئاشکرا دەکات.',
           detail1Title: 'ئەوەی بەردەوام دەیدۆزینەوە',
-          detail1: 'هیکەلی ڕێکخراوەیی کە بە بێ مەبەست گەشەی کرد نەک بە مەبەست دیزاینکرا. پرۆسەی بەڵگەنەکراو کە پشت دەبەستێن بە کەسانی دیاری. بەش و کار لە جیابوونی یەکەوەی کار دەکەن بەبێ هاوئاهەنگی تجاری.',
+          detail1: 'هیکەلی ڕێکخراوەیی کە بە بێ مەبەست گەشەی کرد. پرۆسەی بەڵگەنەکراو.',
           detail2Title: 'چی دەکەین',
-          detail2: 'هیکەلی ڕێکخراوەیی، کتێبچەی ستراتیژی، SOP، و پلانی دامەزراندن دیزاین دەکەین کە گەشەی شڵەژاو دەگۆڕن بۆ ئامێرێکی تجاری ڕێکوپێک و فراوانبوون.',
+          detail2: 'هیکەلی ڕێکخراوەیی و SOP و پلانی دامەزراندن دیزاین دەکەین.',
         },
-      },
-    },
-    proof: {
-      badge: 'ئەنجامی پشتڕاستکراو',
-      heading: 'ژمارەی ڕاستەقینە لە پڕۆژەی ڕاستەقینە',
-      items: {
-        1: { number: '$15M+', label: 'P&L خاوەنداریکرا و بەڕێوەبراوە', context: 'تشکنت تێلیکۆم، باکووری عێراق' },
-        2: { number: '25%', label: 'گەشەی داهات لە 6 مانگدا', context: 'دووبارە ڕێکخستنی ستراتیژی فرۆشتن و نرخگذاری' },
-        3: { number: '35%', label: 'کەمکردنەوەی churn', context: 'تحلیلی پێشبینیکاری و نموونەی Decision Tree' },
-        4: { number: '50%', label: 'زیادکردنی کاپاسیتە', context: 'لەکاتی بڕینی تێچووی کارگێڕی 33% لەکاتی یەکدا' },
-        5: { number: '$5M+', label: 'کاروباری نوێ پتەوکراوە', context: 'گروپی SITI — فرۆشتن، دابەشکردن، خانووبەرە' },
-        6: { number: '$40M+', label: 'بڕیاری وەبەرهێنان شێوەدراوە', context: 'گونجاوی کارخانەی شیرینی — تحلیلی کەڕابووی، نرخگذاری، تایبەتمەندی بەرهەم' },
       },
     },
     about: {
@@ -1035,7 +1034,7 @@ export const translations: Translations = {
       headingEm: 'لە کارگێڕیدا دەستم کردووە.',
       heading2: '',
       body1: '25 ساڵ لەناو ئەم کاروبارانەدا — وەک CCO، بەرێوەبەری تجاری، و بەرێوەبەری گشتی — لە تێلیکۆم، کاڵا بەکارهێنەرییەکان، پیشەسازی، و خانووبەرە لە عێراق، کوردستان، و خەلیجدا. ڕاپۆرتی ئەدا نەدەدامەوە. بەرپرسیار بووم لەبارێت.',
-      body2: 'ئەمەیە جیاوازی بنەڕەتی. دەزانم نموونەی دابەشکردنی شکستی لەناو P&L دا چۆن دیده دەکرێت. دەزانم چ دابەشکەرێک لە هاوریکار دیکەدا پیتر دەکات. دەزانم بۆچی ستراتیژیەکانی چوونەژوورەوەی بازاڕ کە لە کاغەزدا منطقی دیده دەکرێن لە جێبەجێکردندا شکست دەکەون. کاتێک لەگەڵت کار دەکەم، 25 ساڵ زیانی کارگێڕی لەگەڵم دەهێنم — نەک فریمەوەرێکی تازەی دیکە.',
+      body2: 'ئەمەیە جیاوازی بنەڕەتی. دەزانم نموونەی دابەشکردنی شکستی لەناو P&L دا چۆن دیده دەکرێت. کاتێک لەگەڵت کار دەکەم، 25 ساڵ زیانی کارگێڕی لەگەڵم دەهێنم.',
       body3: 'تەنها ئەنجام. هیچ ڕاپۆرتێک لە درافتەکاندا نانیشێت.',
       values: {
         1: {
@@ -1048,7 +1047,7 @@ export const translations: Translations = {
         },
         3: {
           name: 'زانیاری بازاڕی ناوخۆیی',
-          description: 'عێراق، کوردستان، و خەلیج — نەک بازاڕی لێی لێکۆڵینەوە دەکەم لە دووری، بلکو بازاڕی 25 ساڵ لەو بنیادم نراوە.',
+          description: 'عێراق، کوردستان، و خەلیج — نەک بازاڕی لێی لێکۆڵینەوە دەکەم، بلکو بازاڕی 25 ساڵ لەو بنیادم نراوە.',
         },
         4: {
           name: 'داتا نەک هەست',
@@ -1060,7 +1059,7 @@ export const translations: Translations = {
       heading: 'لەگەڵ پسپۆڕ قسە بکە — بەخۆڕاییە',
       info: {
         title: 'با دەستپێبکەین',
-        subtitle: 'جلسەی دۆزینەوەی بەخۆڕایی 30 خولەک. ئاستەنگی تجاری سەرەکیت دەخوێنینەوە و ڕێگای پتانتیاڵی چارەسەر دیاری دەکەین — بەبێ تێچوو.',
+        subtitle: 'جلسەی دۆزینەوەی بەخۆڕایی 30 خولەک. ئاستەنگی تجاری سەرەکیت دەخوێنینەوە و ڕێگای پتانتیاڵی چارەسەر دیاری دەکەین.',
         email: 'ئیمەیڵ',
         phone: 'تەلەفۆن / واتساپ',
         coverage: 'داپۆشینی جوگرافی',
@@ -1076,7 +1075,7 @@ export const translations: Translations = {
         phone: 'تەلەفۆن',
         phonePlaceholder: '+964 7XX XXX XXXX',
         objective: 'ئاستەنگی تجاری سەرەکی',
-        objectivePlaceholder: 'ئاستەنگێک کە ڕووبەڕووی دەبیتەوە وەسف بکە — چی ئەوەی دەبێ کار ناکات؟',
+        objectivePlaceholder: 'ئاستەنگێک کە ڕووبەڕووی دەبیتەوە وەسف بکە',
         attachments: 'بەڵگەی پشتیوانی',
         attachmentsHint: 'ئارەزووی — هیچ داتا، ڕاپۆرت، یان خوێندنەوەی پەیوەندیدار',
         submit: 'جلسەی دۆزینەوەم بسپێرە',
@@ -1084,12 +1083,12 @@ export const translations: Translations = {
       },
       success: {
         title: 'وەرگیراوە',
-        message: 'لە ماوەی 24 کاتژمێردا پەیوەندیت پێوە دەکەم بۆ دانانی وەختی جلسەی دۆزینەوە.',
+        message: 'لە ماوەی 24 کاتژمێردا پەیوەندیت پێوە دەکەم.',
       },
     },
     cta: {
       title: 'کێشەی تجاریەکەت چارەسەری هەیە — و لە ئەوەی فکر دەکەیت نزیکترە',
-      subtitle: 'زۆرینەی بازرگانییەکانی لەگەڵیان کار دەکەم پێویستیان بە ستراتیژیی نوێ نەبوو — پێویستیان بە جێبەجێکردنی ڕاستی ئەوەی بوون بووە. ئەگەر داهاتەکەت توانای ڕاستەقینەکەت نییە، کێشەکە ئەرجەبە هیکەلییە. ئەوەش تەقریبی ئەوەیە کە چارەسەری دەکەم.',
+      subtitle: 'زۆرینەی بازرگانییەکانی لەگەڵیان کار دەکەم پێویستیان بە ستراتیژیی نوێ نەبوو — پێویستیان بە جێبەجێکردنی ڕاستی ئەوەی بوون بووە.',
       button: 'جلسەی دۆزینەوەی بەخۆڕایی بسپێرە',
     },
     footer: {
@@ -1223,7 +1222,7 @@ export const translations: Translations = {
         status: 'دۆخ',
         default: 'بنەڕەتی',
         enabled: 'چالاککراوە',
-        disabled: 'ناچالاککراوە',
+        disabled: 'ناچالاككراوە',
         actions: 'کردارەکان',
         setDefault: 'دانانی وەک بنەڕەتی',
         edit: 'دەستکاری',
