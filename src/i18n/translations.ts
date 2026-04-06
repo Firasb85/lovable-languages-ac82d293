@@ -377,7 +377,7 @@ export const translations: Translations = {
       eyebrow: 'Strategic Growth Advisory',
       heading: 'Turn Market Complexity Into ',
       headingEm: 'Profitable Growth.',
-      subheading: 'Your empire was built on your ambition and vision. We turn it into rigorous institutional control, Great leaders don't drown in operational chaos. They leave us to engineer sales, control processes, and restructure in silence, We are the invisible power that turns your objectives into systems that withstand pressure.',
+      subheading: 'Your empire was built on your ambition and vision. We turn it into rigorous institutional control. Great leaders don\'t drown in operational chaos. They leave us to engineer sales, control processes, and restructure in silence. We are the invisible power that turns your objectives into systems that withstand pressure.',
       primaryCta: 'Book a Strategic Discovery Session',
       secondaryCta: 'Explore Our Expertise',
       stats: {
