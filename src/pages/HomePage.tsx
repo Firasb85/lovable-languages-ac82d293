@@ -1,4 +1,6 @@
 // Meridian Growth Advisory - Home Page
+// UPDATED: Value-first content, fixed hardcoded EN strings, corrected metrics,
+//          replaced fake testimonials with real outcomes, added proof section
 
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +13,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import {
   Building2, ShoppingCart, UtensilsCrossed, Radio, Truck,
   Search, BarChart3, Lightbulb, Rocket,
-  Quote
+  TrendingUp, DollarSign, Users, Globe, BarChart2
 } from 'lucide-react';
 
 const industryKeys = ['realestate', 'fmcg', 'fnb', 'telecom', 'distribution'] as const;
@@ -29,6 +31,8 @@ const processSteps = [
   { icon: Lightbulb, titleKey: 'process.step3.title', descKey: 'process.step3.desc', fallbackTitle: 'Strategize', fallbackDesc: 'Tailored roadmap aligned with your vision' },
   { icon: Rocket, titleKey: 'process.step4.title', descKey: 'process.step4.desc', fallbackTitle: 'Execute', fallbackDesc: 'Hands-on implementation with measurable results' },
 ];
+
+const proofIcons = [DollarSign, TrendingUp, Users, BarChart2, Globe, BarChart3];
 
 export function HomePage() {
   const { gt } = useTranslation();
@@ -56,13 +60,13 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen">
+
       {/* ─── Hero Section ─── */}
       <section className="navy-grid-bg min-h-screen flex items-center pt-20 pb-12 relative overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full border border-primary/20 animate-float pointer-events-none" />
         <div className="absolute bottom-32 right-16 w-40 h-40 rounded-full bg-primary/5 animate-float-delayed pointer-events-none" />
         <div className="absolute top-1/3 right-1/4 w-20 h-20 rotate-45 border border-primary/10 animate-float-slow pointer-events-none" />
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -88,7 +92,7 @@ export function HomePage() {
                   <div className="text-sm text-primary-foreground/70">{gt('hero.stats.years')}</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold gradient-text">32+</div>
+                  <div className="text-3xl font-bold gradient-text">15+</div>
                   <div className="text-sm text-primary-foreground/70">{gt('hero.stats.projects')}</div>
                 </div>
                 <div>
@@ -97,12 +101,11 @@ export function HomePage() {
                 </div>
               </div>
             </div>
-
             <div className="hidden md:block fade-up stagger-3">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
-                  alt="Modern business office"
+                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop"
+                  alt="Modern business district"
                   className="w-full h-[500px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent" />
@@ -130,45 +133,45 @@ export function HomePage() {
 
       <TickerBanner />
 
-      {/* ─── Why Meridian / Social Proof ─── */}
+      {/* ─── Why Us / Social Proof — ALL STRINGS VIA gt() ─── */}
       <section className="py-20 gradient-mesh overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 fade-up">
-            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Why Us</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground">Built on Trust & Results</h2>
+            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">{gt('whyUs.badge')}</Badge>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground">{gt('whyUs.heading')}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop',
-                title: 'Strategic Vision',
-                stat: '25+ Years',
-                desc: 'Of combined advisory experience across MENA markets',
+                img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop',
+                statKey: 'whyUs.cards.1.stat',
+                titleKey: 'whyUs.cards.1.title',
+                descKey: 'whyUs.cards.1.desc',
               },
               {
                 img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
-                title: 'Proven Impact',
-                stat: '32+ Projects',
-                desc: 'Delivered with measurable business transformation',
+                statKey: 'whyUs.cards.2.stat',
+                titleKey: 'whyUs.cards.2.title',
+                descKey: 'whyUs.cards.2.desc',
               },
               {
-                img: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
-                title: 'Regional Reach',
-                stat: '4 Countries',
-                desc: 'Deep local knowledge with international standards',
+                img: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600&h=400&fit=crop',
+                statKey: 'whyUs.cards.3.stat',
+                titleKey: 'whyUs.cards.3.title',
+                descKey: 'whyUs.cards.3.desc',
               },
             ].map((item, i) => (
-              <Card key={item.title} className="overflow-hidden border-border/50 hover-lift fade-up bg-card/80 backdrop-blur-sm" style={{ transitionDelay: `${i * 150}ms` }}>
+              <Card key={i} className="overflow-hidden border-border/50 hover-lift fade-up bg-card/80 backdrop-blur-sm" style={{ transitionDelay: `${i * 150}ms` }}>
                 <div className="relative h-48 overflow-hidden">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+                  <img src={item.img} alt={gt(item.titleKey)} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4">
-                    <span className="text-2xl font-bold gradient-text">{item.stat}</span>
+                    <span className="text-2xl font-bold gradient-text">{gt(item.statKey)}</span>
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{gt(item.titleKey)}</h3>
+                  <p className="text-sm text-muted-foreground">{gt(item.descKey)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -176,25 +179,63 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ─── Process / Methodology ─── */}
+      {/* ─── Proof / Real Numbers Section ─── */}
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
+          <div className="text-center mb-12 fade-up">
+            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">{gt('proof.badge')}</Badge>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground">{gt('proof.heading')}</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {[1,2,3,4,5,6].map((num, idx) => {
+              const number = gt(`proof.items.${num}.number`);
+              const label = gt(`proof.items.${num}.label`);
+              const context = gt(`proof.items.${num}.context`);
+              const Icon = proofIcons[idx];
+              if (!number) return null;
+              return (
+                <Card key={num} className="hover-lift fade-up border-border/50 bg-card/60 backdrop-blur-sm" style={{ transitionDelay: `${idx * 100}ms` }}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <span className="text-3xl font-bold gradient-text">{number}</span>
+                    </div>
+                    <p className="font-semibold text-foreground text-sm mb-1">{label}</p>
+                    <p className="text-xs text-muted-foreground">{context}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Process / Methodology ─── */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-16 fade-up">
-            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Our Approach</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground">How We Deliver Results</h2>
+            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">{gt('outcomes.badge')}</Badge>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground">{gt('outcomes.heading')}</h2>
+            <p className="text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">{gt('outcomes.subheading')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
             <div className="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-primary/0 via-primary/40 to-primary/0" />
-            {processSteps.map((step, i) => {
-              const Icon = step.icon;
+            {[1,2,3,4,5].slice(0,4).map((num, i) => {
+              const result = gt(`outcomes.items.${num}.result`);
+              const proof = gt(`outcomes.items.${num}.proof`);
+              const how = gt(`outcomes.items.${num}.how`);
+              const Icon = processSteps[i]?.icon || Rocket;
+              if (!result) return null;
               return (
-                <div key={step.titleKey} className="text-center fade-up relative" style={{ transitionDelay: `${i * 150}ms` }}>
+                <div key={num} className="text-center fade-up relative" style={{ transitionDelay: `${i * 150}ms` }}>
                   <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mx-auto mb-6 card-glow">
                     <Icon className="w-10 h-10 text-primary" />
                   </div>
-                  <div className="text-xs font-bold text-primary mb-2 uppercase tracking-widest">Step {i + 1}</div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">{gt(step.titleKey) || step.fallbackTitle}</h3>
-                  <p className="text-sm text-muted-foreground">{gt(step.descKey) || step.fallbackDesc}</p>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{result}</h3>
+                  <p className="text-sm font-medium text-primary mb-2">{proof}</p>
+                  <p className="text-xs text-muted-foreground">{how}</p>
                 </div>
               );
             })}
@@ -229,7 +270,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ─── Domains Section ─── */}
+      {/* ─── Domains / Problems We Solve Section ─── */}
       <section id="domains" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 fade-up">
@@ -271,56 +312,6 @@ export function HomePage() {
                 </Card>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Testimonials ─── */}
-      <section className="py-20 bg-secondary">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 fade-up">
-            <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Testimonials</Badge>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground">What Our Clients Say</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: 'Meridian transformed our market entry strategy. Their regional expertise was invaluable.',
-                name: 'Sarah Al-Rashid',
-                role: 'CEO, Gulf Properties',
-                img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
-              },
-              {
-                quote: 'The team delivered actionable insights that drove 40% revenue growth in 18 months.',
-                name: 'Ahmad Hassan',
-                role: 'COO, Levant Distribution',
-                img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face',
-              },
-              {
-                quote: 'Professional, thorough, and deeply committed to our success. A true strategic partner.',
-                name: 'Layla Mahmoud',
-                role: 'VP Strategy, TelcoConnect',
-                img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face',
-              },
-            ].map((item, i) => (
-              <Card
-                key={item.name}
-                className="hover-lift fade-up bg-card/60 backdrop-blur-sm border-border/50"
-                style={{ transitionDelay: `${i * 150}ms` }}
-              >
-                <CardContent className="p-8">
-                  <Quote className="w-8 h-8 text-primary/40 mb-4" />
-                  <p className="text-foreground/80 mb-6 leading-relaxed italic">"{item.quote}"</p>
-                  <div className="flex items-center gap-4">
-                    <img src={item.img} alt={item.name} className="w-12 h-12 rounded-full object-cover border-2 border-primary/30" />
-                    <div>
-                      <div className="font-bold text-foreground">{item.name}</div>
-                      <div className="text-sm text-muted-foreground">{item.role}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
